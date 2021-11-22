@@ -4,7 +4,7 @@ const Footer = () => (
   <>
     <footer>
       <div>
-        <span>>ゆったり見てね </span>
+        <span>ゆったり見てね </span>
       </div>
     </footer>
   </>
