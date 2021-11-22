@@ -4,10 +4,7 @@ const Footer = () => (
   <>
     <footer>
       <div>
-        <span>Powered by </span>
-        <ExtLink href="https://github.com/otoyo/easy-notion-blog">
-          easy-notion-blog
-        </ExtLink>
+        <span>>ゆったり見てね </span>
       </div>
     </footer>
   </>

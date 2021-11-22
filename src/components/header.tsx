@@ -8,11 +8,12 @@ import styles from '../styles/header.module.css'
 const navItems: { label: string; page?: string; link?: string }[] = [
   { label: 'Home', page: '/' },
   { label: 'Blog', page: '/blog' },
+  { label: 'Wishlist', link: 'https://pushy-kitty-07b.notion.site/PC-3a8f8fc1fdb243649a2bbb1cbcb41f11' },
 ]
 
-const defaultTitle = 'easy-notion-blog'
+const defaultTitle = 'My lifelog'
 const defaultDescription =
-  'This Notion Blog is powered by otoyo/easy-notion-blog'
+  'ゆったり見てね'
 
 const Header = ({
   path = '',

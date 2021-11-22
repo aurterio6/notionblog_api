@@ -1,5 +1,8 @@
 export const GA_TRACKING_ID = '' // Place your tracking ID
 
+// トラッキングIDが取得できない場合
+export const existsGaId = GA_TRACKING_ID !== ''
+
 // https://developers.google.com/analytics/devguides/migration/measurement/virtual-pageviews
 export const pageview = (title, url) => {
   if (!GA_TRACKING_ID) {
