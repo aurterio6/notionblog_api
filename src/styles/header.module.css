@@ -1,12 +1,4 @@
-/*.header {
-  display: block;
-  min-height: 64px;
-  padding: 2em 0;
-  text-align: center;
-  letter-spacing: -0.02em;
-}*/
-
-.header top{
+.header {
   display: block;
   min-height: 64px;
   padding: 2em 0;
