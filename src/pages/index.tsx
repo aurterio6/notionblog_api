@@ -6,7 +6,6 @@ const RenderPage = () => (
   <>
     <Header titlePre="Home" />
     <div className={sharedStyles.layout}>
-      <h1>私のライフログ</h1>
       <div className="explanation">
         <p>
           頑張って生きているけれどSNSで発言するほどでもないのでサイトを作ってみました。
@@ -14,8 +13,8 @@ const RenderPage = () => (
         </p>
 
         <p>
-          一目瞭然ですが、notion-blogを使ってます。画像はかっこいいので残しています。
-          今は初めて触るので、いらないところを削除するだけ...いつか...
+          一目瞭然ですが、easy-notion-blogを使わせてもらってます。
+          今は初めてコードに触るので、いつか...
         </p>
       </div>
     </div>
