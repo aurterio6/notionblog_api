@@ -45,7 +45,7 @@ const SocialButtons = ({ title = '', url, id = null }) => {
             <FacebookIcon size={32} round={true} />
           </FacebookShareButton>
         </li>
-        <li className={sharedStyles.socialButtonsItem}>
+        {/*<li className={sharedStyles.socialButtonsItem}>
           <PocketShareButton
             url={url}
             title={title}
@@ -74,7 +74,7 @@ const SocialButtons = ({ title = '', url, id = null }) => {
           >
             <HatenaIcon size={32} round={true} />
           </HatenaShareButton>
-        </li>
+          </li>*/}
       </ul>
     </>
   )
