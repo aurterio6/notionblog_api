@@ -43,6 +43,7 @@
     rgba(0, 255, 0, 0.55) 50.16%,
     rgba(255, 242, 0, 1) 100%
   );
+  margin-bottom: 5%;
   width: auto;
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00FFFF',endColorstr='#FFF200' , GradientType=1);
 }
