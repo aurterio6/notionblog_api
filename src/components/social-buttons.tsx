@@ -45,36 +45,6 @@ const SocialButtons = ({ title = '', url, id = null }) => {
             <FacebookIcon size={32} round={true} />
           </FacebookShareButton>
         </li>
-        <li className={sharedStyles.socialButtonsItem}>
-          <PocketShareButton
-            url={url}
-            title={title}
-            beforeOnClick={() =>
-              gtag.share({
-                method: 'pocket',
-                contentType: 'article',
-                itemId: id,
-              })
-            }
-          >
-            <PocketIcon size={32} round={true} />
-          </PocketShareButton>
-        </li>
-        <li className={sharedStyles.socialButtonsItem}>
-          <HatenaShareButton
-            url={url}
-            title={title}
-            beforeOnClick={() =>
-              gtag.share({
-                method: 'hatena',
-                contentType: 'article',
-                itemId: id,
-              })
-            }
-          >
-            <HatenaIcon size={32} round={true} />
-          </HatenaShareButton>
-        </li>
       </ul>
     </>
   )
