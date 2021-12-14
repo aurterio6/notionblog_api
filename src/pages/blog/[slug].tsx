@@ -8,7 +8,7 @@ import Header from '../../components/header'
 import Heading from '../../components/heading'
 import SocialButtons from '../../components/social-buttons'
 import components from '../../components/dynamic'
-import contentStyles from '../../styles/content.module.css'
+import blogStyles from '../../styles/blog.module.css'
 import { getBlogLink, getTagLink, getDateStr } from '../../lib/blog-helpers'
 import { textBlock } from '../../lib/notion/renderers'
 import {
@@ -101,7 +101,7 @@ const RenderPost = ({
 
   if (!post) {
     return (
-      <div className={contentStyles.post}>
+      <div className={blogStyles.post}>
         <p>
           Woops! did not find the posts, redirecting you back to the blog index
         </p>
@@ -117,14 +117,14 @@ const RenderPost = ({
         description={post.Excerpt}
         ogImageUrl={post.OGImage}
       />
-      <div className={`${contentStyles.flexContainer}`}>
-        <div className={contentStyles.post}>
+      <div className={`${blogStyles.flexContainer}`}>
+        <div className={blogStyles.post}>
           {post.Date && (
             <div className="posted">📅&nbsp;&nbsp;{getDateStr(post.Date)}</div>
           )}
           <h1>{post.Title || ''}</h1>
           <hr />
-          <div className={contentStyles.tagContainer}>
+          <div className={blogStyles.tagContainer}>
             {post.Tags &&
               post.Tags.length > 0 &&
               post.Tags.map(tag => (
@@ -134,7 +134,7 @@ const RenderPost = ({
                   key={tag}
                   passHref
                 >
-                  <a className={contentStyles.tag}>🔖&nbsp;&nbsp;{tag}</a>
+                  <a className={blogStyles.tag}>🔖&nbsp;&nbsp;{tag}</a>
                 </Link>
               ))}
           </div>
@@ -231,7 +231,7 @@ const RenderPost = ({
                   block.Image.Caption[0].Text.Content
                 ) {
                   toRender.push(
-                    <div className={contentStyles.caption}>
+                    <div className={blogStyles.caption}>
                       {block.Image.Caption[0].Text.Content}
                     </div>
                   )
@@ -284,19 +284,17 @@ const RenderPost = ({
           <div>
             <SocialButtons
               title={post.Title}
-              url={'https://www.pappardelle-nono.tk/' + getBlogLink(post.Slug)}
+              url={'https://alpacat.com' + getBlogLink(post.Slug)}
               id={post.Slug}
             />
           </div>
         </div>
-        <div className={contentStyles.sideMenu}>
+        <div className={blogStyles.sideMenu}>
           <h3>Posts in the same category</h3>
           <hr />
 
           {sameTagPosts.length === 0 && (
-            <div className={contentStyles.noContents}>
-              There are no posts yet
-            </div>
+            <div className={blogStyles.noContents}>There are no posts yet</div>
           )}
           {sameTagPosts.length > 0 && (
             <ul>
@@ -319,9 +317,7 @@ const RenderPost = ({
           <hr />
 
           {rankedPosts.length === 0 && (
-            <div className={contentStyles.noContents}>
-              There are no posts yet
-            </div>
+            <div className={blogStyles.noContents}>There are no posts yet</div>
           )}
           {rankedPosts.length > 0 && (
             <ul>
@@ -344,9 +340,7 @@ const RenderPost = ({
           <hr />
 
           {recentPosts.length === 0 && (
-            <div className={contentStyles.noContents}>
-              There are no posts yet
-            </div>
+            <div className={blogStyles.noContents}>There are no posts yet</div>
           )}
           {recentPosts.length > 0 && (
             <ul>
@@ -369,9 +363,7 @@ const RenderPost = ({
           <hr />
 
           {tags.length === 0 && (
-            <div className={contentStyles.noContents}>
-              There are no tags yet
-            </div>
+            <div className={blogStyles.noContents}>There are no tags yet</div>
           )}
           {tags.length > 0 && (
             <ul>
