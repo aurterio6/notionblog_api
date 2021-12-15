@@ -9,15 +9,16 @@ const RenderPage = () => (
       <div className="explanation">
         <p>
           頑張って生きているけれどSNSで発言するほどでもないのでサイトを作ってみました。
+          <br />
           本当はエンジニアに憧れがあるので趣味の一環です。ちょっとずつ作ってみます。
-        </p>
-
-        <p>
+          <br />
+          <br />
           一目瞭然ですが、
           <ExtLink href="https://github.com/otoyo/easy-notion-blog">
             easy-notion-blog
           </ExtLink>
-          を使わせてもらってます。 今は初めてコードに触るので、いつか...
+          を使わせてもらってます。 <br />
+          今は初めてコードに触るので、いつか...
         </p>
       </div>
     </div>

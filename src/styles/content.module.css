@@ -134,7 +134,6 @@
 
 .post :global(p) {
   font-size: 0.8em;
-  min-height: 1.8em;
 }
 
 .post ul {
@@ -163,7 +162,9 @@
 }
 
 .sideMenu {
-  padding: 0 5%;
+  background: lightcyan;
+  opacity: 0.8;
+  padding: 5%;
 }
 
 .sideMenu h3 {
