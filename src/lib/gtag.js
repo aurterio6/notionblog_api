@@ -1,4 +1,4 @@
-export const GA_TRACKING_ID = '' // Place your tracking ID
+export const GA_TRACKING_ID = 'G-SL9F9KPGYV' // Place your tracking ID
 
 // トラッキングIDが取得できない場合
 export const existsGaId = GA_TRACKING_ID !== ''
