@@ -1,4 +1,4 @@
 module.exports = {
-  siteUrl: process.env.SITE_URL || 'https://notion-blog-orpin-chi.vercel.app/',
+  siteUrl: process.env.SITE_URL || 'https://www.pappardelle-nono.tk/',
   generateRobotsTxt: true,
 }
