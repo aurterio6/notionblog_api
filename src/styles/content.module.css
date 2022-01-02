@@ -29,7 +29,6 @@
 .postPreview h3,
 .post h1 {
   font-size: 0.9em;
-  margin: 0;
 }
 
 .postPreview h3 a {
@@ -54,11 +53,10 @@
 }
 
 .post :global(h2) {
-  margin: 2.5rem 0 1.25rem 0;
+  font-size: 1em;
 }
 .post :global(h3) {
-  margin: 2rem 0 1rem 0;
-  font-size: 1em;
+  font-size: 1.1em;
 }
 
 .post :global(video),

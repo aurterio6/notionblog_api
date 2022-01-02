@@ -1,17 +1,18 @@
-import dynamic from 'next/dynamic'
-import ExtLink from './ext-link'
+import dynamic from "next/dynamic";
+import ExtLink from "./ext-link";
 
 const Dynamic = {
   // default tags
-  ol: 'ol',
-  ul: 'ul',
-  li: 'li',
-  p: 'p',
-  blockquote: 'blockquote',
+  ol: "ol",
+  ul: "ul",
+  li: "li",
+  p: "p",
+  blockquote: "blockquote",
   a: ExtLink,
 
-  Code: dynamic(() => import('./code')),
-  Callout: dynamic(() => import('./callout')),
-}
+  Code: dynamic(() => import("./code")),
+  Callout: dynamic(() => import("./callout")),
+  TweetEmbed: dynamic(() => import("./tweet-embed"))
+};
 
-export default Dynamic
+export default Dynamic;
