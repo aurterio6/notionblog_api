@@ -8,12 +8,15 @@ import styles from '../styles/header.module.css'
 const navItems: { label: string; page?: string; link?: string }[] = [
   { label: 'Home', page: '/' },
   { label: 'Blog', page: '/blog' },
-  { label: 'Wishlist', link: 'https://pushy-kitty-07b.notion.site/PC-3a8f8fc1fdb243649a2bbb1cbcb41f11' },
+  {
+    label: 'Wishlist',
+    link:
+      'https://pushy-kitty-07b.notion.site/PC-3a8f8fc1fdb243649a2bbb1cbcb41f11',
+  },
 ]
 
 const defaultTitle = 'My lifelog'
-const defaultDescription =
-  'ゆったり見てね'
+const defaultDescription = 'ゆったり見てね'
 
 const Header = ({
   path = '',
@@ -42,6 +45,15 @@ const Header = ({
           content={!description ? defaultDescription : description}
         />
         {ogImageUrl ? <meta property="og:image" content={ogImageUrl} /> : ''}
+        {ogImageUrl ? (
+          <meta property="twitter:image" content={ogImageUrl} />
+        ) : (
+          ''
+        )}
+        <meta
+          name="twitter:card"
+          content={!ogImageUrl ? 'summary' : 'summary_large_image'}
+        />
         <link
           rel="alternate"
           type="application/atom+xml"

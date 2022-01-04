@@ -1,105 +1,105 @@
-import { NOTION_API_SECRET, DATABASE_ID } from "./server-constants";
-const { Client } = require("@notionhq/client");
-const blogIndexCache = require("./blog-index-cache.js");
+import { NOTION_API_SECRET, DATABASE_ID } from './server-constants'
+const { Client } = require('@notionhq/client')
+const blogIndexCache = require('./blog-index-cache.js')
 
 const client = new Client({
-  auth: NOTION_API_SECRET
-});
+  auth: NOTION_API_SECRET,
+})
 
 interface Post {
-  PageId: string;
-  Title: string;
-  Slug: string;
-  Date: string;
-  Tags: string[];
-  Excerpt: string;
-  OGImage: string;
-  Rank: number;
+  PageId: string
+  Title: string
+  Slug: string
+  Date: string
+  Tags: string[]
+  Excerpt: string
+  OGImage: string
+  Rank: number
 }
 
 interface Block {
-  Id: string;
-  Type: string;
-  HasChildren: boolean;
-  RichTexts?: RichText[];
-  Image?: Image;
-  Code?: Code;
-  Quote?: Quote;
-  Callout?: Callout;
-  Embed?: Embed;
-  Bookmark?: Bookmark;
-  LinkPreview?: LinkPreview;
+  Id: string
+  Type: string
+  HasChildren: boolean
+  RichTexts?: RichText[]
+  Image?: Image
+  Code?: Code
+  Quote?: Quote
+  Callout?: Callout
+  Embed?: Embed
+  Bookmark?: Bookmark
+  LinkPreview?: LinkPreview
 }
 
 interface Image {
-  Caption: RichText[];
-  Type: string;
-  File: File;
+  Caption: RichText[]
+  Type: string
+  File: File
 }
 
 interface File {
-  Url: string;
+  Url: string
 }
 
 interface Code {
-  Text: RichText[];
-  Language: string;
+  Text: RichText[]
+  Language: string
 }
 
 interface Quote {
-  Text: RichText[];
+  Text: RichText[]
 }
 
 interface Callout {
-  RichTexts: RichText[];
-  Icon: Icon;
+  RichTexts: RichText[]
+  Icon: Icon
 }
 
 interface Embed {
-  Url: string;
+  Url: string
 }
 
 interface Bookmark {
-  Url: string;
+  Url: string
 }
 
 interface LinkPreview {
-  Url: string;
+  Url: string
 }
 
 interface RichText {
-  Text: Text;
-  Annotation: Annotation;
-  PlainText: string;
-  Href?: string;
+  Text: Text
+  Annotation: Annotation
+  PlainText: string
+  Href?: string
 }
 
 interface Text {
-  Content: string;
-  Link?: Link;
+  Content: string
+  Link?: Link
 }
 
 interface Icon {
-  Emoji: string;
+  Emoji: string
 }
 
 interface Annotation {
-  Bold: boolean;
-  Italic: boolean;
-  Strikethrough: boolean;
-  Underline: boolean;
-  Code: boolean;
-  Color: string;
+  Bold: boolean
+  Italic: boolean
+  Strikethrough: boolean
+  Underline: boolean
+  Code: boolean
+  Color: string
 }
 
 interface Link {
-  Url: string;
+  Url: string
 }
 
 export async function getPosts(pageSize: number = 10) {
   if (blogIndexCache.exists()) {
-    const allPosts = await getAllPosts();
-    return allPosts.slice(0, pageSize);
+    const allPosts = await getAllPosts()
+    return allPosts.slice(0, pageSize)
   }
 
   let params = {
@@ -107,136 +107,136 @@ export async function getPosts(pageSize: number = 10) {
     filter: _buildFilter(),
     sorts: [
       {
-        property: "Date",
-        timestamp: "created_time",
-        direction: "descending"
-      }
+        property: 'Date',
+        timestamp: 'created_time',
+        direction: 'descending',
+      },
     ],
-    page_size: pageSize
-  };
+    page_size: pageSize,
+  }
 
-  const data = await client.databases.query(params);
+  const data = await client.databases.query(params)
 
   return data.results
     .filter(item => _validPost(item))
-    .map(item => _buildPost(item));
+    .map(item => _buildPost(item))
 }
 
 export async function getAllPosts() {
-  let results = [];
+  let results = []
 
   if (blogIndexCache.exists()) {
-    results = blogIndexCache.get();
-    console.log("Found cached posts.");
+    results = blogIndexCache.get()
+    console.log('Found cached posts.')
   } else {
     let params = {
       database_id: DATABASE_ID,
       filter: _buildFilter(),
       sorts: [
         {
-          property: "Date",
-          timestamp: "created_time",
-          direction: "descending"
-        }
+          property: 'Date',
+          timestamp: 'created_time',
+          direction: 'descending',
+        },
       ],
-      page_size: 100
-    };
+      page_size: 100,
+    }
 
     while (true) {
-      const data = await client.databases.query(params);
+      const data = await client.databases.query(params)
 
-      results = results.concat(data.results);
+      results = results.concat(data.results)
 
       if (!data.has_more) {
-        break;
+        break
       }
 
-      params["start_cursor"] = data.next_cursor;
+      params['start_cursor'] = data.next_cursor
     }
   }
 
-  return results.filter(item => _validPost(item)).map(item => _buildPost(item));
+  return results.filter(item => _validPost(item)).map(item => _buildPost(item))
 }
 
 export async function getRankedPosts(pageSize: number = 10) {
   if (blogIndexCache.exists()) {
-    const allPosts = await getAllPosts();
+    const allPosts = await getAllPosts()
     return allPosts
       .filter(post => !!post.Rank)
       .sort((a, b) => {
         if (a.Rank > b.Rank) {
-          return -1;
+          return -1
         } else if (a.Rank === b.Rank) {
-          return 0;
+          return 0
         }
-        return 1;
+        return 1
       })
-      .slice(0, pageSize);
+      .slice(0, pageSize)
   }
 
   const params = {
     database_id: DATABASE_ID,
     filter: _buildFilter([
       {
-        property: "Rank",
+        property: 'Rank',
         number: {
-          is_not_empty: true
-        }
-      }
+          is_not_empty: true,
+        },
+      },
     ]),
     sorts: [
       {
-        property: "Rank",
-        direction: "descending"
-      }
+        property: 'Rank',
+        direction: 'descending',
+      },
     ],
-    page_size: pageSize
-  };
+    page_size: pageSize,
+  }
 
-  const data = await client.databases.query(params);
+  const data = await client.databases.query(params)
 
   return data.results
     .filter(item => _validPost(item))
-    .map(item => _buildPost(item));
+    .map(item => _buildPost(item))
 }
 
 export async function getPostsBefore(date: string, pageSize: number = 10) {
   if (blogIndexCache.exists()) {
-    const allPosts = await getAllPosts();
-    return allPosts.filter(post => post.Date < date).slice(0, pageSize);
+    const allPosts = await getAllPosts()
+    return allPosts.filter(post => post.Date < date).slice(0, pageSize)
   }
 
   const params = {
     database_id: DATABASE_ID,
     filter: _buildFilter([
       {
-        property: "Date",
+        property: 'Date',
         date: {
-          before: date
-        }
-      }
+          before: date,
+        },
+      },
     ]),
     sorts: [
       {
-        property: "Date",
-        timestamp: "created_time",
-        direction: "descending"
-      }
+        property: 'Date',
+        timestamp: 'created_time',
+        direction: 'descending',
+      },
     ],
-    page_size: pageSize
-  };
+    page_size: pageSize,
+  }
 
-  const data = await client.databases.query(params);
+  const data = await client.databases.query(params)
 
   return data.results
     .filter(item => _validPost(item))
-    .map(item => _buildPost(item));
+    .map(item => _buildPost(item))
 }
 
 export async function getFirstPost() {
   if (blogIndexCache.exists()) {
-    const allPosts = await getAllPosts();
-    return allPosts[allPosts.length - 1];
+    const allPosts = await getAllPosts()
+    return allPosts[allPosts.length - 1]
   }
 
   const params = {
@@ -244,116 +244,116 @@ export async function getFirstPost() {
     filter: _buildFilter(),
     sorts: [
       {
-        property: "Date",
-        timestamp: "created_time",
-        direction: "ascending"
-      }
+        property: 'Date',
+        timestamp: 'created_time',
+        direction: 'ascending',
+      },
     ],
-    page_size: 1
-  };
+    page_size: 1,
+  }
 
-  const data = await client.databases.query(params);
+  const data = await client.databases.query(params)
 
   if (!data.results.length) {
-    return null;
+    return null
   }
 
   if (!_validPost(data.results[0])) {
-    return null;
+    return null
   }
 
-  return _buildPost(data.results[0]);
+  return _buildPost(data.results[0])
 }
 
 export async function getPostBySlug(slug: string) {
   if (blogIndexCache.exists()) {
-    const allPosts = await getAllPosts();
-    return allPosts.find(post => post.Slug === slug);
+    const allPosts = await getAllPosts()
+    return allPosts.find(post => post.Slug === slug)
   }
 
   const data = await client.databases.query({
     database_id: DATABASE_ID,
     filter: _buildFilter([
       {
-        property: "Slug",
+        property: 'Slug',
         text: {
-          equals: slug
-        }
-      }
+          equals: slug,
+        },
+      },
     ]),
     sorts: [
       {
-        property: "Date",
-        timestamp: "created_time",
-        direction: "ascending"
-      }
-    ]
-  });
+        property: 'Date',
+        timestamp: 'created_time',
+        direction: 'ascending',
+      },
+    ],
+  })
 
   if (!data.results.length) {
-    return null;
+    return null
   }
 
   if (!_validPost(data.results[0])) {
-    return null;
+    return null
   }
 
-  return _buildPost(data.results[0]);
+  return _buildPost(data.results[0])
 }
 
 export async function getPostsByTag(tag: string, pageSize: number = 100) {
   if (blogIndexCache.exists()) {
-    const allPosts = await getAllPosts();
-    return allPosts.filter(post => post.Tags.includes(tag)).slice(0, pageSize);
+    const allPosts = await getAllPosts()
+    return allPosts.filter(post => post.Tags.includes(tag)).slice(0, pageSize)
   }
 
   let params = {
     database_id: DATABASE_ID,
     filter: _buildFilter([
       {
-        property: "Tags",
+        property: 'Tags',
         multi_select: {
-          contains: tag
-        }
-      }
+          contains: tag,
+        },
+      },
     ]),
     sorts: [
       {
-        property: "Date",
-        timestamp: "created_time",
-        direction: "descending"
-      }
+        property: 'Date',
+        timestamp: 'created_time',
+        direction: 'descending',
+      },
     ],
-    page_size: pageSize
-  };
+    page_size: pageSize,
+  }
 
-  const data = await client.databases.query(params);
+  const data = await client.databases.query(params)
 
   return data.results
     .filter(item => _validPost(item))
-    .map(item => _buildPost(item));
+    .map(item => _buildPost(item))
 }
 
 export async function getAllBlocksByPageId(pageId) {
-  let allBlocks: Block[] = [];
+  let allBlocks: Block[] = []
 
   let params = {
-    block_id: pageId
-  };
+    block_id: pageId,
+  }
 
   while (true) {
-    const data = await client.blocks.children.list(params);
+    const data = await client.blocks.children.list(params)
 
     const blocks = data.results.map(item => {
-      let block = null;
+      let block = null
 
       switch (item.type) {
-        case "paragraph":
-        case "heading_1":
-        case "heading_2":
-        case "heading_3":
-        case "bulleted_list_item":
-        case "numbered_list_item":
+        case 'paragraph':
+        case 'heading_1':
+        case 'heading_2':
+        case 'heading_3':
+        case 'bulleted_list_item':
+        case 'numbered_list_item':
           block = {
             Id: item.id,
             Type: item.type,
@@ -361,8 +361,8 @@ export async function getAllBlocksByPageId(pageId) {
             RichTexts: item[item.type].text.map(item => {
               const text: Text = {
                 Content: item.text.content,
-                Link: item.text.link
-              };
+                Link: item.text.link,
+              }
 
               const annotation: Annotation = {
                 Bold: item.annotations.bold,
@@ -370,27 +370,27 @@ export async function getAllBlocksByPageId(pageId) {
                 Strikethrough: item.annotations.strikethrough,
                 Underline: item.annotations.underline,
                 Code: item.annotations.code,
-                Color: item.annotations.color
-              };
+                Color: item.annotations.color,
+              }
 
               const richText: RichText = {
                 Text: text,
                 Annotation: annotation,
                 PlainText: item.plain_text,
-                Href: item.href
-              };
+                Href: item.href,
+              }
 
-              return richText;
-            })
-          };
-          break;
-        case "image":
+              return richText
+            }),
+          }
+          break
+        case 'image':
           const image: Image = {
             Caption: item.image.caption.map(item => {
               const text: Text = {
                 Content: item.text.content,
-                Link: item.text.link
-              };
+                Link: item.text.link,
+              }
 
               const annotation: Annotation = {
                 Bold: item.annotations.bold,
@@ -398,38 +398,38 @@ export async function getAllBlocksByPageId(pageId) {
                 Strikethrough: item.annotations.strikethrough,
                 Underline: item.annotations.underline,
                 Code: item.annotations.code,
-                Color: item.annotations.color
-              };
+                Color: item.annotations.color,
+              }
 
               const richText: RichText = {
                 Text: text,
                 Annotation: annotation,
                 PlainText: item.plain_text,
-                Href: item.href
-              };
+                Href: item.href,
+              }
 
-              return richText;
+              return richText
             }),
             Type: item.image.type,
             File: {
-              Url: item.image.file.url
-            }
-          };
+              Url: item.image.file.url,
+            },
+          }
 
           block = {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            Image: image
-          };
-          break;
-        case "code":
+            Image: image,
+          }
+          break
+        case 'code':
           const code: Code = {
             Text: item[item.type].text.map(item => {
               const text: Text = {
                 Content: item.text.content,
-                Link: item.text.link
-              };
+                Link: item.text.link,
+              }
 
               const annotation: Annotation = {
                 Bold: item.annotations.bold,
@@ -437,35 +437,35 @@ export async function getAllBlocksByPageId(pageId) {
                 Strikethrough: item.annotations.strikethrough,
                 Underline: item.annotations.underline,
                 Code: item.annotations.code,
-                Color: item.annotations.color
-              };
+                Color: item.annotations.color,
+              }
 
               const richText: RichText = {
                 Text: text,
                 Annotation: annotation,
                 PlainText: item.plain_text,
-                Href: item.href
-              };
+                Href: item.href,
+              }
 
-              return richText;
+              return richText
             }),
-            Language: item.code.language
-          };
+            Language: item.code.language,
+          }
 
           block = {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            Code: code
-          };
-          break;
-        case "quote":
+            Code: code,
+          }
+          break
+        case 'quote':
           const quote: Quote = {
             Text: item[item.type].text.map(item => {
               const text: Text = {
                 Content: item.text.content,
-                Link: item.text.link
-              };
+                Link: item.text.link,
+              }
 
               const annotation: Annotation = {
                 Bold: item.annotations.bold,
@@ -473,34 +473,34 @@ export async function getAllBlocksByPageId(pageId) {
                 Strikethrough: item.annotations.strikethrough,
                 Underline: item.annotations.underline,
                 Code: item.annotations.code,
-                Color: item.annotations.color
-              };
+                Color: item.annotations.color,
+              }
 
               const richText: RichText = {
                 Text: text,
                 Annotation: annotation,
                 PlainText: item.plain_text,
-                Href: item.href
-              };
+                Href: item.href,
+              }
 
-              return richText;
-            })
-          };
+              return richText
+            }),
+          }
 
           block = {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            Quote: quote
-          };
-          break;
-        case "callout":
+            Quote: quote,
+          }
+          break
+        case 'callout':
           const callout: Callout = {
             RichTexts: item[item.type].text.map(item => {
               const text: Text = {
                 Content: item.text.content,
-                Link: item.text.link
-              };
+                Link: item.text.link,
+              }
 
               const annotation: Annotation = {
                 Bold: item.annotations.bold,
@@ -508,148 +508,148 @@ export async function getAllBlocksByPageId(pageId) {
                 Strikethrough: item.annotations.strikethrough,
                 Underline: item.annotations.underline,
                 Code: item.annotations.code,
-                Color: item.annotations.color
-              };
+                Color: item.annotations.color,
+              }
 
               const richText: RichText = {
                 Text: text,
                 Annotation: annotation,
                 PlainText: item.plain_text,
-                Href: item.href
-              };
+                Href: item.href,
+              }
 
-              return richText;
+              return richText
             }),
             Icon: {
-              Emoji: item[item.type].icon.emoji
-            }
-          };
+              Emoji: item[item.type].icon.emoji,
+            },
+          }
 
           block = {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            Callout: callout
-          };
-          break;
-        case "embed":
+            Callout: callout,
+          }
+          break
+        case 'embed':
           const embed: Embed = {
-            Url: item.embed.url
-          };
+            Url: item.embed.url,
+          }
 
           block = {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            Embed: embed
-          };
-          break;
-        case "bookmark":
+            Embed: embed,
+          }
+          break
+        case 'bookmark':
           const bookmark: Bookmark = {
-            Url: item.bookmark.url
-          };
+            Url: item.bookmark.url,
+          }
 
           block = {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            Bookmark: bookmark
-          };
-          break;
-        case "link_preview":
+            Bookmark: bookmark,
+          }
+          break
+        case 'link_preview':
           const linkPreview: LinkPreview = {
-            Url: item.link_preview.url
-          };
+            Url: item.link_preview.url,
+          }
 
           block = {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            LinkPreview: linkPreview
-          };
-          break;
+            LinkPreview: linkPreview,
+          }
+          break
         default:
           block = {
             Id: item.id,
             Type: item.type,
-            HasChildren: item.has_children
-          };
-          break;
+            HasChildren: item.has_children,
+          }
+          break
       }
 
-      return block;
-    });
+      return block
+    })
 
-    allBlocks = allBlocks.concat(blocks);
+    allBlocks = allBlocks.concat(blocks)
 
     if (!data.has_more) {
-      break;
+      break
     }
 
-    params["start_cursor"] = data.next_cursor;
+    params['start_cursor'] = data.next_cursor
   }
 
-  return allBlocks;
+  return allBlocks
 }
 
 export async function getAllTags() {
   if (blogIndexCache.exists()) {
-    const allPosts = await getAllPosts();
-    return [...new Set(allPosts.flatMap(post => post.Tags))].sort();
+    const allPosts = await getAllPosts()
+    return [...new Set(allPosts.flatMap(post => post.Tags))].sort()
   }
 
   const data = await client.databases.retrieve({
-    database_id: DATABASE_ID
-  });
+    database_id: DATABASE_ID,
+  })
   return data.properties.Tags.multi_select.options
     .map(option => option.name)
-    .sort();
+    .sort()
 }
 
 function _buildFilter(conditions = []) {
-  if (process.env.NODE_ENV === "development") {
-    return { and: conditions };
+  if (process.env.NODE_ENV === 'development') {
+    return { and: conditions }
   }
 
   return {
     and: _uniqueContions(
       conditions.concat([
         {
-          property: "Published",
+          property: 'Published',
           checkbox: {
-            equals: true
-          }
+            equals: true,
+          },
         },
         {
-          property: "Date",
+          property: 'Date',
           date: {
-            on_or_before: new Date().toISOString()
-          }
-        }
+            on_or_before: new Date().toISOString(),
+          },
+        },
       ])
-    )
-  };
+    ),
+  }
 }
 
 function _uniqueContions(conditions = []) {
-  let properties = [];
+  let properties = []
 
   return conditions.filter(cond => {
     if (conditions.includes(cond.property)) {
-      return false;
+      return false
     }
-    properties.push(cond.property);
-    return true;
-  });
+    properties.push(cond.property)
+    return true
+  })
 }
 
 function _validPost(data) {
-  const prop = data.properties;
-  return prop.Page.title.length > 0 && prop.Slug.rich_text.length > 0;
+  const prop = data.properties
+  return prop.Page.title.length > 0 && prop.Slug.rich_text.length > 0
 }
 
 function _buildPost(data) {
-  const prop = data.properties;
+  const prop = data.properties
 
   const post: Post = {
     PageId: data.id,
@@ -660,11 +660,11 @@ function _buildPost(data) {
     Excerpt:
       prop.Excerpt.rich_text.length > 0
         ? prop.Excerpt.rich_text[0].plain_text
-        : "",
+        : '',
     OGImage:
       prop.OGImage.files.length > 0 ? prop.OGImage.files[0].file.url : null,
-    Rank: prop.Rank.number
-  };
+    Rank: prop.Rank.number,
+  }
 
-  return post;
+  return post
 }
