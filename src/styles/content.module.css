@@ -28,7 +28,8 @@
 
 .postPreview h3,
 .post h1 {
-  font-size: 0.9em;
+  font-size: 1.1em;
+  margin: 0;
 }
 
 .postPreview h3 a {
@@ -54,9 +55,11 @@
 
 .post :global(h2) {
   font-size: 1em;
+  margin: 2rem 0 0.5rem 0;
 }
 .post :global(h3) {
-  font-size: 1.1em;
+  font-size: 0.9em;
+  margin: 2rem 0 0.5rem 0;
 }
 
 .post :global(video),
@@ -137,6 +140,15 @@
 .post ul {
   font-size: 0.8em;
   list-style-type: square;
+}
+
+.linkPreview {
+  font-size: 0.7em;
+  width: 50%;
+}
+
+.linkPreview :global(h3) {
+  margin: 0;
 }
 
 .nextContainer {

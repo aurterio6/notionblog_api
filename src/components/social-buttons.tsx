@@ -1,10 +1,6 @@
 import {
   FacebookIcon,
   FacebookShareButton,
-  HatenaIcon,
-  HatenaShareButton,
-  PocketIcon,
-  PocketShareButton,
   TwitterIcon,
   TwitterShareButton,
 } from 'react-share'

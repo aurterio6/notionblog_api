@@ -7,7 +7,7 @@ import Header from '../../components/header'
 import Heading from '../../components/heading'
 import SocialButtons from '../../components/social-buttons'
 import components from '../../components/dynamic'
-import blogStyles from '../../styles/blog.module.css'
+import contentStyles from '../../styles/content.module.css'
 import { getBlogLink, getTagLink, getDateStr } from '../../lib/blog-helpers'
 import { textBlock } from '../../lib/notion/renderers'
 import {
@@ -102,7 +102,7 @@ const RenderPost = ({
 
   if (!post) {
     return (
-      <div className={blogStyles.post}>
+      <div className={contentStyles.post}>
         <p>
           Woops! did not find the posts, redirecting you back to the blog index
         </p>
@@ -118,14 +118,14 @@ const RenderPost = ({
         description={post.Excerpt}
         ogImageUrl={post.OGImage}
       />
-      <div className={`${blogStyles.flexContainer}`}>
-        <div className={blogStyles.post}>
+      <div className={`${contentStyles.flexContainer}`}>
+        <div className={contentStyles.post}>
           {post.Date && (
             <div className="posted">📅&nbsp;&nbsp;{getDateStr(post.Date)}</div>
           )}
           <h1>{post.Title || ''}</h1>
           <hr />
-          <div className={blogStyles.tagContainer}>
+          <div className={contentStyles.tagContainer}>
             {post.Tags &&
               post.Tags.length > 0 &&
               post.Tags.map(tag => (
@@ -135,7 +135,7 @@ const RenderPost = ({
                   key={tag}
                   passHref
                 >
-                  <a className={blogStyles.tag}>🔖&nbsp;&nbsp;{tag}</a>
+                  <a className={contentStyles.tag}>🔖&nbsp;&nbsp;{tag}</a>
                 </Link>
               ))}
           </div>
@@ -232,7 +232,7 @@ const RenderPost = ({
                   block.Image.Caption[0].Text.Content
                 ) {
                   toRender.push(
-                    <div className={blogStyles.caption}>
+                    <div className={contentStyles.caption}>
                       {block.Image.Caption[0].Text.Content}
                     </div>
                   )
@@ -277,7 +277,7 @@ const RenderPost = ({
                   toRender.push(
                     <LinkPreview
                       url={block.Embed.Url}
-                      className={blogStyles.linkPreview}
+                      className={contentStyles.linkPreview}
                     />
                   )
                 }
@@ -286,7 +286,7 @@ const RenderPost = ({
                 toRender.push(
                   <LinkPreview
                     url={block.Bookmark.Url}
-                    className={blogStyles.linkPreview}
+                    className={contentStyles.linkPreview}
                   />
                 )
                 break
@@ -294,7 +294,7 @@ const RenderPost = ({
                 toRender.push(
                   <LinkPreview
                     url={block.LinkPreview.Url}
-                    className={blogStyles.linkPreview}
+                    className={contentStyles.linkPreview}
                   />
                 )
                 break
@@ -316,21 +316,22 @@ const RenderPost = ({
             return toRender
           })}
           <div>
-            {NEXT_PUBLIC_URL && (
-              <SocialButtons
-                title={post.Title}
-                url={new URL(getBlogLink(post.Slug), NEXT_PUBLIC_URL)}
-                id={post.Slug}
-              />
-            )}
+            <hr></hr>
+            <SocialButtons
+              title={post.Title}
+              url={'https://www.pappardelle-nono.tk' + getBlogLink(post.Slug)}
+              id={post.Slug}
+            />
           </div>
         </div>
-        <div className={blogStyles.sideMenu}>
+        <div className={contentStyles.sideMenu}>
           <h3>Posts in the same category</h3>
           <hr />
 
           {sameTagPosts.length === 0 && (
-            <div className={blogStyles.noContents}>There are no posts yet</div>
+            <div className={contentStyles.noContents}>
+              There are no posts yet
+            </div>
           )}
           {sameTagPosts.length > 0 && (
             <ul>
@@ -353,7 +354,9 @@ const RenderPost = ({
           <hr />
 
           {rankedPosts.length === 0 && (
-            <div className={blogStyles.noContents}>There are no posts yet</div>
+            <div className={contentStyles.noContents}>
+              There are no posts yet
+            </div>
           )}
           {rankedPosts.length > 0 && (
             <ul>
@@ -376,7 +379,9 @@ const RenderPost = ({
           <hr />
 
           {recentPosts.length === 0 && (
-            <div className={blogStyles.noContents}>There are no posts yet</div>
+            <div className={contentStyles.noContents}>
+              There are no posts yet
+            </div>
           )}
           {recentPosts.length > 0 && (
             <ul>
@@ -399,7 +404,9 @@ const RenderPost = ({
           <hr />
 
           {tags.length === 0 && (
-            <div className={blogStyles.noContents}>There are no tags yet</div>
+            <div className={contentStyles.noContents}>
+              There are no tags yet
+            </div>
           )}
           {tags.length > 0 && (
             <ul>
