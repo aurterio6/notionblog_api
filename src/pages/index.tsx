@@ -19,6 +19,17 @@ const RenderPage = () => (
           </ExtLink>
           を使わせてもらってます。 <br />
           今は初めてコードに触るので、いつか...
+          <br />
+          <br />
+          ページがインデックスされないのでいくつか記事を
+          <br />
+          <ExtLink href="https://www.pappardelle-nono.tk/blog/kentikushi">
+            建築士の記事
+          </ExtLink>
+          <br />
+          <ExtLink href="https://www.pappardelle-nono.tk/blog/revice">
+            できることの確認
+          </ExtLink>
         </p>
       </div>
     </div>
