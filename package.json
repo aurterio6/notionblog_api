@@ -5,10 +5,9 @@
   "scripts": {
     "dev": "next dev",
     "start": "next start",
-    "build": "node scripts/set-blog-index-cache.js && next build && node scripts/expire-blog-index-cache.js",
+    "build": "node scripts/set-blog-index-cache.js && next build && node scripts/expire-blog-index-cache.js && next-sitemap --config sitemap.config.js",
     "format": "prettier --write \"**/*.{js,jsx,json,ts,tsx,md,mdx,css,html,yml,yaml,scss,sass}\" --ignore-path .gitignore",
-    "lint": "next lint",
-    "postbuild": "next-sitemap --config sitemap.config.js"
+    "lint": "next lint"
   },
   "husky": {
     "hooks": {
