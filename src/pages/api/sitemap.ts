@@ -39,11 +39,13 @@ export default async function(req: IncomingMessage, res: ServerResponse) {
   try {
     const posts = await getPosts()
 
-    const slug = posts.map(post => {
-      return post.Slug
-    })
+    const slug = posts
+      .map(post => {
+        if (postIsPublished(post)) return post.Slug
+      })
+      .filter(Boolean)
 
-    console.log(slug)
+    ///console.log(slug)
     res.write(createSitemap(slug))
     res.end()
   } catch (e) {

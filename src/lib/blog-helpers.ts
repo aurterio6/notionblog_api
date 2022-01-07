@@ -22,7 +22,7 @@ export const getDateStr = date => {
 }
 
 export const postIsPublished = (post: any) => {
-  return post.Published === 'Yes' && new Date(post.Date) < NOW
+  return post.Published.checkbox === true && new Date(post.Date) < NOW
 }
 
 export const normalizeSlug = slug => {

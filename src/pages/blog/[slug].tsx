@@ -120,7 +120,10 @@ const RenderPost = ({
       <div className={`${contentStyles.flexContainer}`}>
         <div className={contentStyles.post}>
           {post.Date && (
-            <div className="posted">📅&nbsp;&nbsp;{getDateStr(post.Date)}</div>
+            <div className="posted">
+              📅&nbsp;&nbsp;投稿日:{getDateStr(post.CreatedTime)}
+              &nbsp;&nbsp;最終編集日:{getDateStr(post.LastEditedTime)}
+            </div>
           )}
           <h1>{post.Title || ''}</h1>
           <hr />

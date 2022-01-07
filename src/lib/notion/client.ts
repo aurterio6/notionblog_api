@@ -8,12 +8,15 @@ const client = new Client({
 
 interface Post {
   PageId: string
+  CreatedTime: string
+  LastEditedTime: string
   Title: string
   Slug: string
   Date: string
   Tags: string[]
   Excerpt: string
   OGImage: string
+  Published: string
   Rank: number
 }
 
@@ -653,6 +656,8 @@ function _buildPost(data) {
 
   const post: Post = {
     PageId: data.id,
+    CreatedTime: data.created_time,
+    LastEditedTime: data.last_edited_time,
     Title: prop.Page.title[0].plain_text,
     Slug: prop.Slug.rich_text[0].plain_text,
     Date: prop.Date.date.start,
@@ -663,6 +668,7 @@ function _buildPost(data) {
         : '',
     OGImage:
       prop.OGImage.files.length > 0 ? prop.OGImage.files[0].file.url : null,
+    Published: prop.Published,
     Rank: prop.Rank.number,
   }
 
