@@ -28,7 +28,7 @@ function createSitemap(slugs = []) {
       <loc>https://www.pappardelle-nono.tk</loc>
     </url>
     <url>
-      <loc>hhttps://www.pappardelle-nono.tk/blog</loc>
+      <loc>https://www.pappardelle-nono.tk/blog</loc>
       <changefreq>weekly</changefreq>
     </url>${tagsString}
   </urlset>`
