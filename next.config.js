@@ -31,6 +31,10 @@ if (!DATABASE_ID) {
 }
 
 module.exports = {
+  async rewrites() {
+    return [{ source: '/sitemap', destination: '/api/sitemap' }]
+  },
+
   target: 'experimental-serverless-trace',
 
   images: {
