@@ -214,16 +214,16 @@ const RenderPost = ({
 
             switch (block.Type) {
               case 'paragraph':
-                if (richText.Annotation.Color === 'default') {
-                  toRender.push(textBlock(block, false, block.Id))
-                  break
-                } else {
-                  toRender.push(
-                    <p style={{ color: richText.Annotation.Color }}>
-                      {textBlock(block, true, block.Id)}
-                    </p>
-                    ///できてるけどCSSが無効になってる
-                  )
+                if (!!richText) {
+                  if (richText.Annotation.Color === 'default') {
+                    toRender.push(textBlock(block, false, block.Id))
+                  } else {
+                    toRender.push(
+                      <p style={{ color: richText.Annotation.Color }}>
+                        {textBlock(block, true, block.Id)}
+                      </p>
+                    )
+                  }
                 }
                 break
               case 'heading_1':
