@@ -1,6 +1,7 @@
 import { GetServerSidePropsContext } from 'next'
 import RSS from 'rss'
 import { getPosts, getAllPosts } from '../lib/notion/client'
+import { NEXT_PUBLIC_URL } from '../lib/notion/server-constants'
 
 export const getServerSideProps = async ({
   res,
@@ -37,7 +38,7 @@ async function generateFeedXml() {
       title: post.Title,
       description: post.Excerpt,
       date: new Date(post.CreatedTime),
-      url: `https://www.pappardelle-nono.tk/${post.Slug}`,
+      url: NEXT_PUBLIC_URL + '/' + post.Slug,
     })
   })
 

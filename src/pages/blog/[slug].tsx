@@ -2,6 +2,8 @@ import React, { useEffect } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/router'
 
+import { NEXT_PUBLIC_URL } from '../../lib/notion/server-constants'
+
 import Header from '../../components/header'
 import Heading from '../../components/heading'
 import SocialButtons from '../../components/social-buttons'
@@ -331,7 +333,7 @@ const RenderPost = ({
             <hr></hr>
             <SocialButtons
               title={post.Title}
-              url={'https://www.pappardelle-nono.tk' + getBlogLink(post.Slug)}
+              url={NEXT_PUBLIC_URL + getBlogLink(post.Slug)}
               id={post.Slug}
             />
           </div>

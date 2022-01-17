@@ -1,4 +1,5 @@
 import { IncomingMessage, ServerResponse } from 'http'
+import { NEXT_PUBLIC_URL } from '../../lib/notion/server-constants'
 
 import { getPosts } from '../../lib/notion/client'
 import {
@@ -10,7 +11,7 @@ import {
 function mapToURL(slug) {
   return `
     <url>
-      <loc>https://www.pappardelle-nono.tk${getBlogLink(slug)}</loc>
+      <loc>${NEXT_PUBLIC_URL + getBlogLink(slug)}</loc>
       <changefreq>weekly</changefreq>
     </url>`
 }
@@ -25,10 +26,10 @@ function createSitemap(slugs = []) {
   return `<?xml version="1.0" encoding="utf-8"?>
   <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-      <loc>https://www.pappardelle-nono.tk</loc>
+      <loc>${NEXT_PUBLIC_URL}</loc>
     </url>
     <url>
-      <loc>https://www.pappardelle-nono.tk/blog</loc>
+      <loc>${NEXT_PUBLIC_URL}/blog</loc>
       <changefreq>weekly</changefreq>
     </url>${tagsString}
   </urlset>`
