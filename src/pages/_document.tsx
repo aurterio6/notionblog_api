@@ -5,6 +5,10 @@ class MyDocument extends Document {
     return (
       <Html lang="ja">
         <Head />
+        <meta
+          name="google-site-verification"
+          content="2g3RFD3L8SfjAIWxjXyGgGekP72TUB3dOfuhY479jz8"
+        />
         <body>
           <Main />
           <NextScript />
