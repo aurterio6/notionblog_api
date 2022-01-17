@@ -29,6 +29,10 @@ const Header = ({
   return (
     <header className={styles.header}>
       <Head>
+        <meta
+          name="google-site-verification"
+          content="2g3RFD3L8SfjAIWxjXyGgGekP72TUB3dOfuhY479jz8"
+        />
         <title>
           {!titlePre ? defaultTitle : `${titlePre} - ${defaultTitle}`}
         </title>
