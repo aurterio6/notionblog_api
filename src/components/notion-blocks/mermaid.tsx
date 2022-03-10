@@ -1,6 +1,5 @@
 import React, { useEffect, useRef, FC } from 'react'
-import mermaid from './mermaid'
-
+import mermaid from 'mermaid'
 import styles from '../../styles/mermaid.module.css'
 
 type Props = {
