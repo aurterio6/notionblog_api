@@ -6,13 +6,13 @@ import {
 } from 'react-share'
 
 import * as gtag from '../lib/gtag'
-import sharedStyles from '../styles/shared.module.css'
+import styles from '../styles/social-buttons.module.css'
 
 const SocialButtons = ({ title = '', url, id = null }) => {
   return (
     <>
-      <ul className={sharedStyles.socialButtons}>
-        <li className={sharedStyles.socialButtonsItem}>
+      <ul className={styles.socialButtons}>
+        <li>
           <TwitterShareButton
             url={url}
             title={title}
@@ -27,7 +27,7 @@ const SocialButtons = ({ title = '', url, id = null }) => {
             <TwitterIcon size={32} round={true} />
           </TwitterShareButton>
         </li>
-        <li className={sharedStyles.socialButtonsItem}>
+        <li>
           <FacebookShareButton
             url={url}
             beforeOnClick={() =>

@@ -1,12 +1,8 @@
 import { IncomingMessage, ServerResponse } from 'http'
 import { NEXT_PUBLIC_URL } from '../../lib/notion/server-constants'
 
-import { getPosts } from '../../lib/notion/client'
-import {
-  postIsPublished,
-  getTagLink,
-  getBlogLink,
-} from '../../lib/blog-helpers'
+import { getPosts, getPostBySlug } from '../../lib/notion/client'
+import { getBlogLink } from '../../lib/blog-helpers'
 
 function mapToURL(slug) {
   return `
@@ -42,7 +38,7 @@ export default async function(req: IncomingMessage, res: ServerResponse) {
 
     const slug = posts
       .map(post => {
-        if (postIsPublished(post)) return post.Slug
+        if (getPostBySlug(post)) return post.Slug
       })
       .filter(Boolean)
 

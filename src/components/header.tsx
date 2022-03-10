@@ -1,87 +1,41 @@
 import Link from 'next/link'
-import Head from 'next/head'
 import { useRouter } from 'next/router'
 
-import ExtLink from './ext-link'
+import { SITE_TITLE } from './document-head'
 import styles from '../styles/header.module.css'
 
-const navItems: { label: string; page?: string; link?: string }[] = [
-  { label: 'Home', page: '/' },
-  { label: 'Blog', page: '/blog' },
-  {
-    label: 'Wishlist',
-    link:
-      'https://pushy-kitty-07b.notion.site/PC-3a8f8fc1fdb243649a2bbb1cbcb41f11',
-  },
-]
+interface NavItem {
+  label: string
+  path: string
+}
 
-const defaultTitle = 'My lifelog'
-const defaultDescription = 'ゆったり見てね'
+const Header = () => {
+  const { asPath } = useRouter()
 
-const Header = ({
-  path = '',
-  titlePre = '',
-  description = '',
-  ogImageUrl = '',
-}) => {
-  const { pathname } = useRouter()
+  const navItems: NavItem[] = [
+    { label: 'Home', path: '/' },
+    { label: 'Blog', path: '/blog' },
+    {
+      label: 'Wishlist',
+      path:
+        'https://pushy-kitty-07b.notion.site/PC-3a8f8fc1fdb243649a2bbb1cbcb41f11',
+    },
+  ]
 
   return (
     <header className={styles.header}>
-      <Head>
-        <meta
-          name="google-site-verification"
-          content="2g3RFD3L8SfjAIWxjXyGgGekP72TUB3dOfuhY479jz8"
-        />
-        <title>
-          {!titlePre ? defaultTitle : `${titlePre} - ${defaultTitle}`}
-        </title>
-        <meta
-          name="description"
-          content={!description ? defaultDescription : description}
-        />
-        <meta
-          property="og:title"
-          content={!titlePre ? defaultTitle : titlePre}
-        />
-        <meta
-          property="og:description"
-          content={!description ? defaultDescription : description}
-        />
-        {ogImageUrl ? <meta property="og:image" content={ogImageUrl} /> : ''}
-        {ogImageUrl ? (
-          <meta property="twitter:image" content={ogImageUrl} />
-        ) : (
-          ''
-        )}
-        <meta
-          name="twitter:card"
-          content={!ogImageUrl ? 'summary' : 'summary_large_image'}
-        />
-        <link
-          rel="alternate"
-          type="application/atom+xml"
-          href="/atom"
-          title={defaultTitle}
-        />
-      </Head>
       <h1>
         <Link href="/" passHref>
-          <a>{defaultTitle}</a>
+          <a>{SITE_TITLE}</a>
         </Link>
       </h1>
+
       <ul>
-        {navItems.map(({ label, page, link }) => (
+        {navItems.map(({ label, path }) => (
           <li key={label}>
-            {page ? (
-              <Link href={page} passHref>
-                <a className={pathname === page ? 'active' : undefined}>
-                  {label}
-                </a>
-              </Link>
-            ) : (
-              <ExtLink href={link}>{label}</ExtLink>
-            )}
+            <Link href={path} passHref>
+              <a className={asPath === path ? 'active' : null}>{label}</a>
+            </Link>
           </li>
         ))}
       </ul>

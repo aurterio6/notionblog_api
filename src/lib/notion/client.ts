@@ -1,111 +1,37 @@
 import { NOTION_API_SECRET, DATABASE_ID } from './server-constants'
+import {
+  Post,
+  Block,
+  Image,
+  Code,
+  Quote,
+  Callout,
+  Embed,
+  Bookmark,
+  LinkPreview,
+  Table,
+  TableRow,
+  TableCell,
+  RichText,
+  Text,
+  Annotation,
+} from './interfaces'
+// eslint-disable-next-line @typescript-eslint/no-var-requires
 const { Client } = require('@notionhq/client')
-const blogIndexCache = require('./blog-index-cache.js')
+import * as blogIndexCache from './blog-index-cache'
+import * as imageCache from './image-cache'
 
 const client = new Client({
   auth: NOTION_API_SECRET,
 })
 
-interface Post {
-  PageId: string
-  CreatedTime: string
-  LastEditedTime: string
-  Title: string
-  Slug: string
-  Date: string
-  Tags: string[]
-  Excerpt: string
-  OGImage: string
-  Published: string
-  Rank: number
-}
-
-interface Block {
-  Id: string
-  Type: string
-  HasChildren: boolean
-  RichTexts?: RichText[]
-  Image?: Image
-  Code?: Code
-  Quote?: Quote
-  Callout?: Callout
-  Embed?: Embed
-  Bookmark?: Bookmark
-  LinkPreview?: LinkPreview
-}
-
-interface Image {
-  Caption: RichText[]
-  Type: string
-  File: File
-}
-
-interface File {
-  Url: string
-}
-
-interface Code {
-  Text: RichText[]
-  Language: string
-}
-
-interface Quote {
-  Text: RichText[]
-}
-
-interface Callout {
-  RichTexts: RichText[]
-  Icon: Icon
-}
-
-interface Embed {
-  Url: string
-}
-
-interface Bookmark {
-  Url: string
-}
-
-interface LinkPreview {
-  Url: string
-}
-
-interface RichText {
-  Text: Text
-  Annotation: Annotation
-  PlainText: string
-  Href?: string
-}
-
-interface Text {
-  Content: string
-  Link?: Link
-}
-
-interface Icon {
-  Emoji: string
-}
-
-interface Annotation {
-  Bold: boolean
-  Italic: boolean
-  Strikethrough: boolean
-  Underline: boolean
-  Code: boolean
-  Color: string
-}
-
-interface Link {
-  Url: string
-}
-
-export async function getPosts(pageSize: number = 10) {
+export async function getPosts(pageSize = 10) {
   if (blogIndexCache.exists()) {
     const allPosts = await getAllPosts()
     return allPosts.slice(0, pageSize)
   }
 
-  let params = {
+  const params = {
     database_id: DATABASE_ID,
     filter: _buildFilter(),
     sorts: [
@@ -132,7 +58,7 @@ export async function getAllPosts() {
     results = blogIndexCache.get()
     console.log('Found cached posts.')
   } else {
-    let params = {
+    const params = {
       database_id: DATABASE_ID,
       filter: _buildFilter(),
       sorts: [
@@ -161,7 +87,7 @@ export async function getAllPosts() {
   return results.filter(item => _validPost(item)).map(item => _buildPost(item))
 }
 
-export async function getRankedPosts(pageSize: number = 10) {
+export async function getRankedPosts(pageSize = 10) {
   if (blogIndexCache.exists()) {
     const allPosts = await getAllPosts()
     return allPosts
@@ -203,7 +129,7 @@ export async function getRankedPosts(pageSize: number = 10) {
     .map(item => _buildPost(item))
 }
 
-export async function getPostsBefore(date: string, pageSize: number = 10) {
+export async function getPostsBefore(date: string, pageSize = 10) {
   if (blogIndexCache.exists()) {
     const allPosts = await getAllPosts()
     return allPosts.filter(post => post.Date < date).slice(0, pageSize)
@@ -279,7 +205,7 @@ export async function getPostBySlug(slug: string) {
     filter: _buildFilter([
       {
         property: 'Slug',
-        text: {
+        rich_text: {
           equals: slug,
         },
       },
@@ -304,13 +230,13 @@ export async function getPostBySlug(slug: string) {
   return _buildPost(data.results[0])
 }
 
-export async function getPostsByTag(tag: string, pageSize: number = 100) {
+export async function getPostsByTag(tag: string, pageSize = 100) {
   if (blogIndexCache.exists()) {
     const allPosts = await getAllPosts()
     return allPosts.filter(post => post.Tags.includes(tag)).slice(0, pageSize)
   }
 
-  let params = {
+  const params = {
     database_id: DATABASE_ID,
     filter: _buildFilter([
       {
@@ -337,11 +263,11 @@ export async function getPostsByTag(tag: string, pageSize: number = 100) {
     .map(item => _buildPost(item))
 }
 
-export async function getAllBlocksByPageId(pageId) {
+export async function getAllBlocksByBlockId(blockId) {
   let allBlocks: Block[] = []
 
-  let params = {
-    block_id: pageId,
+  const params = {
+    block_id: blockId,
   }
 
   while (true) {
@@ -361,62 +287,19 @@ export async function getAllBlocksByPageId(pageId) {
             Id: item.id,
             Type: item.type,
             HasChildren: item.has_children,
-            RichTexts: item[item.type].text.map(item => {
-              const text: Text = {
-                Content: item.text.content,
-                Link: item.text.link,
-              }
-
-              const annotation: Annotation = {
-                Bold: item.annotations.bold,
-                Italic: item.annotations.italic,
-                Strikethrough: item.annotations.strikethrough,
-                Underline: item.annotations.underline,
-                Code: item.annotations.code,
-                Color: item.annotations.color,
-              }
-
-              const richText: RichText = {
-                Text: text,
-                Annotation: annotation,
-                PlainText: item.plain_text,
-                Href: item.href,
-              }
-
-              return richText
-            }),
+            RichTexts: item[item.type].rich_text.map(_buildRichText),
           }
           break
         case 'image':
           const image: Image = {
-            Caption: item.image.caption.map(item => {
-              const text: Text = {
-                Content: item.text.content,
-                Link: item.text.link,
-              }
-
-              const annotation: Annotation = {
-                Bold: item.annotations.bold,
-                Italic: item.annotations.italic,
-                Strikethrough: item.annotations.strikethrough,
-                Underline: item.annotations.underline,
-                Code: item.annotations.code,
-                Color: item.annotations.color,
-              }
-
-              const richText: RichText = {
-                Text: text,
-                Annotation: annotation,
-                PlainText: item.plain_text,
-                Href: item.href,
-              }
-
-              return richText
-            }),
+            Caption: item.image.caption.map(_buildRichText),
             Type: item.image.type,
-            File: {
-              Url: item.image.file.url,
-            },
+          }
+
+          if (item.image.type === 'external') {
+            image.External = { Url: item.image.external.url }
+          } else {
+            image.File = { Url: item.image.file.url }
           }
 
           block = {
@@ -428,30 +311,8 @@ export async function getAllBlocksByPageId(pageId) {
           break
         case 'code':
           const code: Code = {
-            Text: item[item.type].text.map(item => {
-              const text: Text = {
-                Content: item.text.content,
-                Link: item.text.link,
-              }
-
-              const annotation: Annotation = {
-                Bold: item.annotations.bold,
-                Italic: item.annotations.italic,
-                Strikethrough: item.annotations.strikethrough,
-                Underline: item.annotations.underline,
-                Code: item.annotations.code,
-                Color: item.annotations.color,
-              }
-
-              const richText: RichText = {
-                Text: text,
-                Annotation: annotation,
-                PlainText: item.plain_text,
-                Href: item.href,
-              }
-
-              return richText
-            }),
+            Caption: item[item.type].caption.map(_buildRichText),
+            Text: item[item.type].rich_text.map(_buildRichText),
             Language: item.code.language,
           }
 
@@ -464,30 +325,7 @@ export async function getAllBlocksByPageId(pageId) {
           break
         case 'quote':
           const quote: Quote = {
-            Text: item[item.type].text.map(item => {
-              const text: Text = {
-                Content: item.text.content,
-                Link: item.text.link,
-              }
-
-              const annotation: Annotation = {
-                Bold: item.annotations.bold,
-                Italic: item.annotations.italic,
-                Strikethrough: item.annotations.strikethrough,
-                Underline: item.annotations.underline,
-                Code: item.annotations.code,
-                Color: item.annotations.color,
-              }
-
-              const richText: RichText = {
-                Text: text,
-                Annotation: annotation,
-                PlainText: item.plain_text,
-                Href: item.href,
-              }
-
-              return richText
-            }),
+            Text: item[item.type].rich_text.map(_buildRichText),
           }
 
           block = {
@@ -499,30 +337,7 @@ export async function getAllBlocksByPageId(pageId) {
           break
         case 'callout':
           const callout: Callout = {
-            RichTexts: item[item.type].text.map(item => {
-              const text: Text = {
-                Content: item.text.content,
-                Link: item.text.link,
-              }
-
-              const annotation: Annotation = {
-                Bold: item.annotations.bold,
-                Italic: item.annotations.italic,
-                Strikethrough: item.annotations.strikethrough,
-                Underline: item.annotations.underline,
-                Code: item.annotations.code,
-                Color: item.annotations.color,
-              }
-
-              const richText: RichText = {
-                Text: text,
-                Annotation: annotation,
-                PlainText: item.plain_text,
-                Href: item.href,
-              }
-
-              return richText
-            }),
+            RichTexts: item[item.type].rich_text.map(_buildRichText),
             Icon: {
               Emoji: item[item.type].icon.emoji,
             },
@@ -571,6 +386,41 @@ export async function getAllBlocksByPageId(pageId) {
             LinkPreview: linkPreview,
           }
           break
+        case 'table':
+          const table: Table = {
+            TableWidth: item.table.table_width,
+            HasColumnHeader: item.table.has_column_header,
+            HasRowHeader: item.table.has_row_header,
+            Rows: [],
+          }
+
+          block = {
+            Id: item.id,
+            Type: item.type,
+            HasChildren: item.has_children,
+            Table: table,
+          }
+          break
+        case 'table_row':
+          const cells: TableCell[] = item.table_row.cells.map(cell => {
+            const tableCell: TableCell = {
+              RichTexts: cell.map(_buildRichText),
+            }
+
+            return tableCell
+          })
+
+          const tableRow: TableRow = {
+            Cells: cells,
+          }
+
+          block = {
+            Id: item.id,
+            Type: item.type,
+            HasChildren: item.has_children,
+            TableRow: tableRow,
+          }
+          break
         default:
           block = {
             Id: item.id,
@@ -590,6 +440,29 @@ export async function getAllBlocksByPageId(pageId) {
     }
 
     params['start_cursor'] = data.next_cursor
+  }
+
+  for (let i = 0; i < allBlocks.length; i++) {
+    const block = allBlocks[i]
+
+    if (block.Type === 'table') {
+      // Fetch table_row
+      block.Table.Rows = await getAllBlocksByBlockId(block.Id)
+    } else if (
+      (block.Type === 'bulleted_list_item' ||
+        block.Type === 'numbered_list_item') &&
+      block.HasChildren
+    ) {
+      // Fetch nested list_item
+      block.Children = await getAllBlocksByBlockId(block.Id)
+    } else if (
+      block.Type === 'image' &&
+      block.Image.File &&
+      block.Image.File.Url
+    ) {
+      // Cache image to local (only type: file)
+      imageCache.store(block.Id, block.Image.File.Url)
+    }
   }
 
   return allBlocks
@@ -615,7 +488,7 @@ function _buildFilter(conditions = []) {
   }
 
   return {
-    and: _uniqueContions(
+    and: _uniqueConditions(
       conditions.concat([
         {
           property: 'Published',
@@ -634,11 +507,11 @@ function _buildFilter(conditions = []) {
   }
 }
 
-function _uniqueContions(conditions = []) {
-  let properties = []
+function _uniqueConditions(conditions = []) {
+  const properties = []
 
   return conditions.filter(cond => {
-    if (conditions.includes(cond.property)) {
+    if (properties.includes(cond.property)) {
       return false
     }
     properties.push(cond.property)
@@ -648,7 +521,11 @@ function _uniqueContions(conditions = []) {
 
 function _validPost(data) {
   const prop = data.properties
-  return prop.Page.title.length > 0 && prop.Slug.rich_text.length > 0
+  return (
+    prop.Page.title.length > 0 &&
+    prop.Slug.rich_text.length > 0 &&
+    !!prop.Date.date
+  )
 }
 
 function _buildPost(data) {
@@ -656,11 +533,10 @@ function _buildPost(data) {
 
   const post: Post = {
     PageId: data.id,
-    CreatedTime: data.created_time,
-    LastEditedTime: data.last_edited_time,
     Title: prop.Page.title[0].plain_text,
     Slug: prop.Slug.rich_text[0].plain_text,
     Date: prop.Date.date.start,
+    LastEditedTime: data.last_edited_time,
     Tags: prop.Tags.multi_select.map(opt => opt.name),
     Excerpt:
       prop.Excerpt.rich_text.length > 0
@@ -668,9 +544,33 @@ function _buildPost(data) {
         : '',
     OGImage:
       prop.OGImage.files.length > 0 ? prop.OGImage.files[0].file.url : null,
-    Published: prop.Published,
     Rank: prop.Rank.number,
   }
 
   return post
+}
+
+function _buildRichText(item) {
+  const text: Text = {
+    Content: item.text.content,
+    Link: item.text.link,
+  }
+
+  const annotation: Annotation = {
+    Bold: item.annotations.bold,
+    Italic: item.annotations.italic,
+    Strikethrough: item.annotations.strikethrough,
+    Underline: item.annotations.underline,
+    Code: item.annotations.code,
+    Color: item.annotations.color,
+  }
+
+  const richText: RichText = {
+    Text: text,
+    Annotation: annotation,
+    PlainText: item.plain_text,
+    Href: item.href,
+  }
+
+  return richText
 }
