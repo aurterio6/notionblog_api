@@ -1,6 +1,6 @@
 import { GetServerSidePropsContext } from 'next'
 import RSS from 'rss'
-import { getPosts, getAllPosts } from '../lib/notion/client'
+import { getAllPosts } from '../lib/notion/client'
 import { NEXT_PUBLIC_URL } from '../lib/notion/server-constants'
 
 export const getServerSideProps = async ({
