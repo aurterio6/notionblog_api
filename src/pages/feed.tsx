@@ -37,7 +37,7 @@ async function generateFeedXml() {
     feed.item({
       title: post.Title,
       description: post.Excerpt,
-      date: new Date(post.CreatedDate),
+      date: new Date(post.Date),
       url: NEXT_PUBLIC_URL + '/' + post.Slug,
     })
   })
