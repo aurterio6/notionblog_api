@@ -32,7 +32,10 @@ if (!DATABASE_ID) {
 
 module.exports = {
   async rewrites() {
-    return [{ source: '/sitemap', destination: '/api/sitemap' }]
+    return [
+      { source: '/sitemap', destination: '/api/sitemap' },
+      { source: '/sitemap.txt', destination: '/api/sitemap2' },
+    ]
   },
 
   target: 'experimental-serverless-trace',
