@@ -20,12 +20,19 @@ const RenderPage = () => (
       </p>
       <p>いくつかブログを試しているところなので以下にリンク</p>
       <p>
-        [アメブロ](https://ameblo.jp/pelissier)<br></br>
-        [vercelを使ったnotionブログ](https://www.pappardelle-nono.tk/)<br></br>
-        [herokuを使ったnotionブログ](https://flasknotionblog.herokuapp.com/)
+        <ExtLink href="https://ameblo.jp/pelissier">[アメブロ]</ExtLink>
         <br></br>
-        [wordpressを使ったnotionからコピペしているブログ](https://ilmiolifelog.herokuapp.com/)
+        <ExtLink href="https://www.pappardelle-nono.tk/">
+          [vercelを使ったnotionブログ]
+        </ExtLink>
         <br></br>
+        <ExtLink href="https://flasknotionblog.herokuapp.com/">
+          [herokuを使ったnotionブログ]
+        </ExtLink>
+        <br></br>
+        <ExtLink href="https://ilmiolifelog.herokuapp.com/">
+          [wordpressを使ったnotionからコピペしているブログ]
+        </ExtLink>
       </p>
     </div>
   </div>
