@@ -1,4 +1,5 @@
 import DocumentHead from '../components/document-head'
+import ExtLink from '../components/ext-link'
 import styles from '../styles/page.module.css'
 
 const RenderPage = () => (
