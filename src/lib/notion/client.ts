@@ -622,7 +622,7 @@ function _buildPost(data) {
         ? prop.Excerpt.rich_text[0].plain_text
         : '',
     OGImage:
-      prop.OGImage.files.length > 0 ? prop.OGImage.files[0].file.url : null,
+      prop.OGImage.files.length > 0 ? prop.OGImage.files[0].external.url : null,
     Rank: prop.Rank.number,
   }
 
