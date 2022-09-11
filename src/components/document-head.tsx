@@ -16,6 +16,7 @@ const DocumentHead = ({ title = '', description = '', urlOgImage = '' }) => {
         name="description"
         content={description ? description : SITE_DESCRIPTION}
       />
+      <meta name="google-site-verification" content="2g3RFD3L8SfjAIWxjXyGgGekP72TUB3dOfuhY479jz8" />
       {NEXT_PUBLIC_URL ? (
         <meta
           property="og:url"
